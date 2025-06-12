@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "accounts",
     "companies",
     "specialists",
+    "chat",
     "core",
     # 3rd party
     "django_extensions",
