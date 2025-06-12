@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "chat",
     "core",
     "notifications",
+    "newsfeed",
     # 3rd party
     "django_extensions",
     "rest_framework",
