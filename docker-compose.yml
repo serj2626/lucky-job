@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  django:
+    build: ./django_app
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./django_app:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+      - postgres
+
+  fastapi:
+    build: ./fastapi_app
+    command: uvicorn main:app --host 0.0.0.0 --port 8001 --reload
+    volumes:
+      - ./fastapi_app:/app
+    ports:
+      - "8001:8001"
+    depends_on:
+      - redis
+
+  celery:
+    build: ./fastapi_app
+    command: celery -A celery_tasks.worker worker --loglevel=info
+    volumes:
+      - ./fastapi_app:/app
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
+  postgres:
+    image: postgres:13-alpine
+    environment:
+      POSTGRES_USER: devuser
+      POSTGRES_PASSWORD: devpass
+      POSTGRES_DB: devdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

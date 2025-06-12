@@ -1,0 +1,76 @@
+# ▶️ Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+pip-wheel-metadata/
+
+# 🐍 venv / poetry / pipenv
+.venv/
+venv/
+env/
+ENV/
+.venv.bak/
+*.env
+*.env.*
+
+# 📁 FastAPI-specific
+instance/
+*.db
+*.sqlite3
+*.log
+
+# 🔥 Uvicorn
+*.pid
+*.log
+
+# 🐳 Docker
+*.tar
+*.img
+*.lock
+docker-compose.override.yml
+
+# 🌍 OS files (Linux/Unix)
+.DS_Store
+Thumbs.db
+ehthumbs.db
+*.swp
+*.swo
+*~
+
+# 🧠 VSCode
+.vscode/
+.code-workspace
+
+# 🧠 PyCharm
+.idea/
+*.iml
+
+# 🔧 Testing
+.coverage
+.tox/
+.pytest_cache/
+htmlcov/
+nosetests.xml
+test-results.xml
+junit-*.xml
+
+# 📦 Dependency files
+poetry.lock
+Pipfile.lock
+
+# 🔐 Secrets (optional, handled by .env usually)
+secrets.json
+config.yaml
+
+# 🧪 Migrations (optional, uncomment if used)
+# alembic/versions/
+
+# ✅ MyPy / Lint / Type checking
+.mypy_cache/
+.pyre/
+.pytype/
+ruff_cache/
