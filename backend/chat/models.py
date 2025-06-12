@@ -63,7 +63,7 @@ class Message(BaseID, BaseDate):
     class Meta:
         verbose_name = "Сообщение"
         verbose_name_plural = "Сообщения"
-        ordering = ["timestamp"]
+        ordering = ["created_at"]
 
     def __str__(self):
         return f"Сообщение от {self.sender.email}"

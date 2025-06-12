@@ -21,7 +21,6 @@ else:
     from .dev import *
 
 
-
 ALLOWED_HOSTS = []
 
 SITE_URL = os.getenv("SITE_URL")
@@ -33,7 +32,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-      'django.contrib.sitemaps',
+    "django.contrib.sitemaps",
     # Local
     "accounts",
     "companies",
@@ -42,6 +41,7 @@ INSTALLED_APPS = [
     "core",
     "notifications",
     "newsfeed",
+    "contacts",
     # 3rd party
     "django_extensions",
     "rest_framework",
