@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "specialists",
     "chat",
     "core",
+    "notifications",
     # 3rd party
     "django_extensions",
     "rest_framework",

@@ -38,7 +38,6 @@ class Chat(BaseID, BaseDate):
         return f"Диалог {self.id}"
 
 
-
 class Message(BaseID, BaseDate):
     """Сообщение в диалоге"""
 
