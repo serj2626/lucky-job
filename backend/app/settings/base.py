@@ -24,7 +24,7 @@ else:
 
 ALLOWED_HOSTS = []
 
-
+SITE_URL = os.getenv("SITE_URL")
 # Application definition
 INSTALLED_APPS = [
     "django.contrib.admin",

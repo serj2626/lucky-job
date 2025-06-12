@@ -2,6 +2,7 @@ from django.contrib.auth import user_logged_in, user_logged_out
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth import get_user_model
+from .services import create_email_verification
 
 # from companies.models import Company
 # from employees.models import Employee
@@ -20,6 +21,12 @@ def user_logged_in_callback(sender, request, user, **kwargs):
 def user_logged_out_callback(sender, request, user, **kwargs):
     user.online = False
     user.save()
+
+
+@receiver(post_save, sender=User)
+def user_created(sender, instance, created, **kwargs):
+    if created and not instance.is_verified:
+        create_email_verification(instance)
 
 
 # @receiver(post_save, sender=User)

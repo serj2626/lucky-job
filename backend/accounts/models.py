@@ -1,10 +1,12 @@
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
 from django.db import models
 from django.utils import timezone
-
-from common.mixins import WebpImageMixin
+from django.conf import settings
+import uuid
 from common.models import BaseID
-from common.upload_to import dynamic_upload_to
+from datetime import timedelta
+
+EXPIRE_MONUTE = 60
 
 
 class CustomUserManager(UserManager):
@@ -74,15 +76,28 @@ class User(BaseID, AbstractBaseUser, PermissionsMixin):
         return f"{self.get_type_display()} ({self.email})"
 
 
-class VerificationCode(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    code = models.CharField(max_length=255)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+class EmailVerification(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="email_verifications",
+        verbose_name="Пользователь",
+    )
+    token = models.UUIDField(
+        default=uuid.uuid4, unique=True, editable=False, verbose_name="Токен"
+    )
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+    expires_at = models.DateTimeField("Дата истечения", blank=True, null=True)
 
-    class Meta:
-        verbose_name = "Код подтверждения"
-        verbose_name_plural = "Коды подтверждения"
+    is_used = models.BooleanField(default=False, verbose_name="использован")
+
+    def has_expired(self):
+        return timezone.now() > self.expires_at
+
+    def save(self, *args, **kwargs):
+        if not self.expires_at:
+            self.expires_at = timezone.now() + timedelta(minutes=EXPIRE_MONUTE)
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Код подтверждения для {self.user.email}"
+        return f"{self.user.email} - {'used' if self.is_used else 'pending'}"
