@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from PIL import Image
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
-
+import os
 
 phone_regex = re.compile(r"^\+?7?\d{10}$")
 
@@ -16,13 +16,15 @@ phone_validator = RegexValidator(
 
 def validate_russian_phone(value):
     # Удаляем пробелы, дефисы, скобки
-    cleaned = re.sub(r'[^\d+]', '', value)
+    cleaned = re.sub(r"[^\d+]", "", value)
 
     # Проверка на соответствие формату +7XXXXXXXXXX или 8XXXXXXXXXX
-    if re.fullmatch(r'(\+7|8)\d{10}', cleaned) is None:
+    if re.fullmatch(r"(\+7|8)\d{10}", cleaned) is None:
         raise ValidationError(
-            _('Введите корректный российский номер телефона в формате +7XXXXXXXXXX или 8XXXXXXXXXX'),
-            params={'value': value},
+            _(
+                "Введите корректный российский номер телефона в формате +7XXXXXXXXXX или 8XXXXXXXXXX"
+            ),
+            params={"value": value},
         )
 
 
@@ -48,4 +50,13 @@ def validate_image_extension_and_format(image):
     except Exception:
         raise ValidationError(
             "Не удалось открыть изображение. Убедитесь, что файл — это допустимое изображение."
+        )
+
+
+def validate_image_extension(value):
+    ext = os.path.splitext(value.name)[1].lower()
+    valid_extensions = [".jpg", ".jpeg", ".png", ".webp"]
+    if ext not in valid_extensions:
+        raise ValidationError(
+            f"Недопустимое расширение '{ext}'. Разрешены: jpg, jpeg, png, webp."
         )
