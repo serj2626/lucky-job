@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     "notifications",
     "newsfeed",
     "contacts",
-    'seo',
+    "seo",
+    "legal",
     # 3rd party
     "django_extensions",
     "rest_framework",
