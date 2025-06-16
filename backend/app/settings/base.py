@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "seo",
     "legal",
     "interviews",
+    "moderation",
     # 3rd party
     "django_extensions",
     "rest_framework",

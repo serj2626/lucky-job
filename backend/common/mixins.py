@@ -1,13 +1,25 @@
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
-from PIL import Image
-import io
+from django.db import models
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 from django.core.exceptions import MultipleObjectsReturned
-
+from django.utils import timezone
 from common.upload import compress_image
+
+
+class ModerationMixin(models.Model):
+    is_verified = models.BooleanField("Подтверждено", default=False)
+    verified_at = models.DateTimeField("Дата подтверждения", blank=True, null=True)
+
+    class Meta:
+        abstract = True
+
+    def verify(self):
+        self.is_verified = True
+        self.verified_at = timezone.now()
+        self.save()
 
 
 class AvatarPreviewMixin:
