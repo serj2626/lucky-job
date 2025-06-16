@@ -30,7 +30,7 @@ class PolicyView(BaseSectionViewMixin):
 
 
 @method_decorator(cache_page(60 * 15), name="get")
-class CookiePolicyView(BaseSectionViewMixin):
+class CookieView(BaseSectionViewMixin):
     model = Cookie
     serializer_class = CookieSerializer
 

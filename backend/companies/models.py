@@ -168,7 +168,7 @@ class Job(ResumeOrVacancyModel):
         verbose_name="Компания",
     )
 
-    # Основная информация
+
     description = models.TextField("Описание вакансии")
     requirements = models.TextField("Требования", blank=True)
     responsibilities = models.TextField("Обязанности", blank=True)
@@ -178,7 +178,7 @@ class Job(ResumeOrVacancyModel):
     format_work = models.CharField(
         "Формат работы", max_length=20, choices=FORMAT_WORK, default="remote"
     )
-    # Опыт и образование
+
     experience = models.CharField(
         "Требуемый опыт", max_length=10, choices=EXPERIENCE_LEVELS, default="no_exp"
     )
@@ -269,11 +269,11 @@ class JobApplication(BaseID, BaseDate):
 
 
 # Сигналы для автоматического создания профиля компании
-from django.db.models.signals import post_save
-from django.dispatch import receiver
+# from django.db.models.signals import post_save
+# from django.dispatch import receiver
 
 
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def create_company_profile(sender, instance, created, **kwargs):
-    if created and instance.type == "company":
-        Company.objects.create(user=instance)
+# @receiver(post_save, sender=settings.AUTH_USER_MODEL)
+# def create_company_profile(sender, instance, created, **kwargs):
+#     if created and instance.type == "company":
+#         Company.objects.create(user=instance)

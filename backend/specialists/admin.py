@@ -1,54 +1,167 @@
-# from django.contrib import admin
-# from .models import (
-#     Specialist, SpecialistContact, SpecialistSocial, Resume,
-#     Project, Experience, Education, CommentProject
-# )
+from django.contrib import admin
+from .models import (
+    Specialist,
+    SpecialistContact,
+    SpecialistSocial,
+    Resume,
+    Project,
+    Experience,
+    Education,
+    CommentProject,
+)
 
 
-# class SpecialistContactInline(admin.TabularInline):
-#     model = SpecialistContact
-#     extra = 1
+class SpecialistContactInline(admin.TabularInline):
+    """
+    Контакты специалиста
+    """
+
+    model = SpecialistContact
+    extra = 1
 
 
-# class SpecialistSocialInline(admin.TabularInline):
-#     model = SpecialistSocial
-#     extra = 1
+class SpecialistSocialInline(admin.TabularInline):
+    model = SpecialistSocial
+    extra = 1
 
 
-# class ResumeInline(admin.StackedInline):
-#     model = Resume
-#     extra = 0
-#     can_delete = False
+class ProjectInline(admin.StackedInline):
+    """
+    Проекты
+    """
+
+    model = Project
+    extra = 0
+    verbose_name = "Проект"
+    verbose_name_plural = "Проекты специалиста"
+    fields = (
+        (
+            "title",
+            "category",
+        ),
+        (
+            "link",
+            "url",
+        ),
+        "description",
+        "likes",
+        "skills",
+    )
+    filter_horizontal = ("skills", "likes")
 
 
-# @admin.register(Specialist)
-# class SpecialistAdmin(admin.ModelAdmin):
-#     list_display = ("__str__", "user", "status", "position", "gender", "date_of_birth")
-#     list_filter = ("status", "gender", "skills")
-#     search_fields = ("user__username", "first_name", "last_name", "position")
-#     inlines = [SpecialistContactInline, SpecialistSocialInline, ResumeInline]
-#     filter_horizontal = ("skills",)
+class ResumeInline(admin.StackedInline):
+    """
+    Резюме
+    """
+
+    model = Resume
+    extra = 0
+    can_delete = False
+    verbose_name = "Резюме"
+    verbose_name_plural = "Резюме специалиста"
+    fields = (
+        (
+            "position",
+            "category",
+        ),
+        ("salary_min", "salary_max", "currency"),
+        ("work_schedule", "is_active"),
+        "skills",
+    )
+    filter_horizontal = ("skills",)
 
 
-# @admin.register(SpecialistContact)
-# class SpecialistContactAdmin(admin.ModelAdmin):
-#     list_display = ("specialist", "type", "value")
-#     list_filter = ("type",)
-#     search_fields = ("value", "specialist__user__username")
+class ExperienceInline(admin.StackedInline):
+    """
+    Опыт работы
+    """
+
+    model = Experience
+    extra = 0
+    verbose_name = "Опыт работы"
+    verbose_name_plural = "Опыт работы специалиста"
+    fields = (
+        (
+            "company",
+            "category",
+            "position",
+        ),
+        (
+            "start_month",
+            "start_year",
+        ),
+        (
+            "end_month",
+            "end_year",
+        ),
+        "description",
+        "skills",
+    )
+    filter_horizontal = ("skills",)
 
 
-# @admin.register(SpecialistSocial)
-# class SpecialistSocialAdmin(admin.ModelAdmin):
-#     list_display = ("specialist", "type", "link")
-#     list_filter = ("type",)
-#     search_fields = ("link", "specialist__user__username")
+class EducationInline(admin.StackedInline):
+    """
+    Образование
+    """
+
+    model = Education
+    extra = 0
+    verbose_name = "Образование"
+    verbose_name_plural = "Образование специалиста"
+    fields = (
+        (
+            "university",
+            "specialization",
+            "type",
+        ),
+        (
+            "start_month",
+            "start_year",
+        ),
+        (
+            "end_month",
+            "end_year",
+        ),
+        "file",
+    )
 
 
-# @admin.register(Resume)
-# class ResumeAdmin(admin.ModelAdmin):
-#     list_display = ("__str__", "specialist", "is_active")
-#     list_filter = ("is_active",)
-#     search_fields = ("position", "specialist__user__username")
+@admin.register(Specialist)
+class Admin(admin.ModelAdmin):
+    """
+    Админка специалистов
+    """
+
+    list_display = (
+        "user",
+        "status",
+        "position",
+        "avatar",
+        "first_name",
+        "last_name",
+        "gender",
+        "date_of_birth",
+    )
+    list_filter = ("status", "gender", "skills")
+    search_fields = ("user__username", "first_name", "last_name", "position")
+    inlines = [
+        EducationInline,
+        ExperienceInline,
+        SpecialistContactInline,
+        SpecialistSocialInline,
+        ResumeInline,
+        ProjectInline,
+    ]
+    filter_horizontal = ("skills",)
+    fields = (
+        ("user", "status"),
+        ("avatar", "position"),
+        ("first_name", "last_name"),
+        ("gender", "date_of_birth"),
+        "skills",
+    )
 
 
 # class ProjectCommentInline(admin.TabularInline):

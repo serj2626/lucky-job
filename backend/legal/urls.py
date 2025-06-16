@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CookieView, OffertaView, PolicyView,
+from .views import CookieView, OffertaView, PolicyView
 
 
 urlpatterns = [

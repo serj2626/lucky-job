@@ -10,6 +10,25 @@ from django.core.exceptions import MultipleObjectsReturned
 from common.upload import compress_image
 
 
+class AvatarPreviewMixin:
+    """
+    Данный миксин отображает превью аватара в админке.
+    Его нужно использовать в модели, у которых есть изображение
+    """
+
+    image_field_name = "avatar"
+
+    def avatar_preview(self):
+        avatar = getattr(self, self.image_field_name, None)
+        if avatar:
+            return format_html(
+                '<img src="{}" style="max-height: 200px;" />', avatar.url
+            )
+        return "Нет изображения"
+
+    avatar_preview.short_description = "Превью аватара"
+
+
 class WebpImageMixin:
     """
     Миксин для сжатия изображений

@@ -1,11 +1,76 @@
-# from django.contrib import admin
-# from .models import (
-#     Company,
-#     CompanySocial,
-#     CompanyContact,
-#     Job,
-#     JobApplication,
-# )
+from django.contrib import admin
+from .models import (
+    Company,
+    CompanySocial,
+    CompanyContact,
+    Job,
+    JobApplication,
+)
+
+
+class JobInline(admin.StackedInline):
+    model = Job
+    extra = 0
+
+    verbose_name = "Вакансия"
+    verbose_name_plural = "Вакансии"
+    fields = (
+        (
+            "position",
+            "category",
+            "is_active",
+        ),
+        ("level", "format_work", ),
+        ("experience", "education", ),
+        ("country", "city", ),
+        ("address", "hide_salary", ),
+        ("salary_min", "salary_max", "currency"),
+        "work_schedule",
+        "description",
+        "requirements",
+        "responsibilities",
+        "skills",
+    )
+
+    filter_horizontal = ("skills",)
+
+
+class CompanySocialInline(admin.TabularInline):
+    model = CompanySocial
+    extra = 0
+
+
+class CompanyContactInline(admin.TabularInline):
+    model = CompanyContact
+    extra = 0
+
+
+@admin.register(Company)
+class CompanyAdmin(admin.ModelAdmin):
+    """
+    Админка компаний
+    """
+
+    list_display = (
+        "user",
+        "avatar",
+        "name",
+        "legal_name",
+        "website",
+        "is_verified",
+        "founded_year",
+        "size",
+    )
+    fields = (
+        (
+            "name",
+            "legal_name",
+        ),
+        ("website", "avatar"),
+        ("is_verified", "founded_year", "size"),
+        "description",
+    )
+    inlines = (JobInline, CompanyContactInline, CompanySocialInline)
 
 
 # @admin.register(Company)
