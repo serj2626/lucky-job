@@ -1,21 +1,18 @@
 from django.contrib import admin
 from .models import User
+from django.contrib.auth.admin import UserAdmin
 
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    """
-    Админка пользователей
-    """
+    model = User
+    list_display = ("email", "type", "is_staff", "is_superuser", )
+    search_fields = ("email","type" )
+    ordering = ("email","type")
+    # inlines = (ProfileLine,)
 
-    list_display = (
-        "email",
-        "type",
-        "online",
-        "is_verified",
-        "is_active",
-        "is_superuser",
-        "is_staff",
-    )
-    list_editable = ("type",)
-    list_filter = ("type",)
+    # def has_profile(self, obj):
+    #     return hasattr(obj, "profile")
+
+    # has_profile.boolean = True
+    # has_profile.short_description = "Профиль есть?"

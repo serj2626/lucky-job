@@ -85,7 +85,7 @@ class Specialist(BaseID, WebpImageMixin):
 
     def __str__(self):
         name = f"{self.first_name or ''} {self.last_name or ''}".strip()
-        return f"Специалист {name or self.user.username}"
+        return f"Специалист {name or self.user.email}"
 
 
 class SpecialistContact(models.Model):

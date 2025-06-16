@@ -1,4 +1,6 @@
 from django.contrib import admin
+
+from common.mixins import AdminImagePreviewMixin
 from .models import (
     Specialist,
     SpecialistContact,
@@ -129,10 +131,11 @@ class EducationInline(admin.StackedInline):
 
 
 @admin.register(Specialist)
-class Admin(admin.ModelAdmin):
+class Admin(admin.ModelAdmin, AdminImagePreviewMixin):
     """
     Админка специалистов
     """
+    image_field_name = "avatar"
 
     list_display = (
         "user",
@@ -143,7 +146,9 @@ class Admin(admin.ModelAdmin):
         "last_name",
         "gender",
         "date_of_birth",
+        "get_image",
     )
+    save_on_top = True
     list_filter = ("status", "gender", "skills")
     search_fields = ("user__username", "first_name", "last_name", "position")
     inlines = [
@@ -162,42 +167,3 @@ class Admin(admin.ModelAdmin):
         ("gender", "date_of_birth"),
         "skills",
     )
-
-
-# class ProjectCommentInline(admin.TabularInline):
-#     model = CommentProject
-#     extra = 0
-
-
-# @admin.register(Project)
-# class ProjectAdmin(admin.ModelAdmin):
-#     list_display = ("title", "specialist", "category", "time_ago")
-#     list_filter = ("category", "skills")
-#     search_fields = ("title", "description", "specialist__user__username")
-#     inlines = [ProjectCommentInline]
-#     filter_horizontal = ("skills", "likes")
-
-
-# @admin.register(Experience)
-# class ExperienceAdmin(admin.ModelAdmin):
-#     list_display = ("specialist", "company", "position", "category", "start_date", "end_date")
-#     list_filter = ("category", "skills")
-#     search_fields = ("company", "position", "specialist__user__username")
-#     filter_horizontal = ("skills",)
-
-
-# @admin.register(Education)
-# class EducationAdmin(admin.ModelAdmin):
-#     list_display = ("specialist", "university", "specialization", "type", "start_date", "end_date")
-#     list_filter = ("type",)
-#     search_fields = ("university", "specialization", "specialist__user__username")
-
-
-# @admin.register(CommentProject)
-# class CommentProjectAdmin(admin.ModelAdmin):
-#     list_display = ("project", "user", "parent", "short_text", "created_at")
-#     search_fields = ("text", "user__username", "project__title")
-
-#     def short_text(self, obj):
-#         return obj.text[:75] + "..." if len(obj.text) > 75 else obj.text
-#     short_text.short_description = "Комментарий"

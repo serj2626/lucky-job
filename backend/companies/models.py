@@ -90,11 +90,12 @@ class Company(BaseID, WebpImageMixin):
         ordering = ["name"]
 
     def __str__(self):
-        return self.name
+        return f'Компания "{self.name or self.user.email}"'
+
 
     def save(self, *args, **kwargs):
         if not self.name:
-            self.name = f"Компания {self.legal_name} - {self.user.email}"
+            self.name = f"Компания {self.name or self.user.email}"
         super().save(*args, **kwargs)
 
     @property

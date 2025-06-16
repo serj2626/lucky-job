@@ -1,5 +1,5 @@
 from django.contrib.auth import user_logged_in, user_logged_out
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.contrib.auth import get_user_model
 from .services import create_email_verification
@@ -48,5 +48,16 @@ def create_user_profile(sender, instance, created, **kwargs):
             Company.objects.get_or_create(user=instance)
         case "specialists":
             Specialist.objects.get_or_create(user=instance)
+        case "other" | "admin":
+            pass
+
+
+@receiver(post_delete, sender=settings.AUTH_USER_MODEL)
+def delete_user_profile(sender, instance, **kwargs):
+    match instance.type:
+        case "company":
+            Company.objects.filter(user=instance).delete()
+        case "specialists":
+            Specialist.objects.filter(user=instance).delete()
         case "other" | "admin":
             pass
