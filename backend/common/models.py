@@ -53,7 +53,6 @@ class BaseDate(models.Model):
 
 class BaseReview(BaseID, BaseDate):
     name = models.CharField("Имя", max_length=100, null=True, blank=True)
-    email = models.EmailField("Email", null=True, blank=True)
     rating = models.SmallIntegerField(
         "Рейтинг", default=5, validators=[MinValueValidator(1), MaxValueValidator(5)]
     )

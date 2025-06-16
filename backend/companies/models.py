@@ -9,10 +9,9 @@ from common.vars import (
     SOCIAL_TYPES,
     CONTACT_TYPES,
 )
-from django.core.validators import MinValueValidator, MaxValueValidator
-from common.models import BaseDate, BaseID, ResumeOrVacancyModel
-from django.utils.text import slugify
-from django.utils import timezone
+from django.core.exceptions import ValidationError
+
+from common.models import BaseDate, BaseID, BaseReview, ResumeOrVacancyModel
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -92,7 +91,6 @@ class Company(BaseID, WebpImageMixin):
     def __str__(self):
         return f'Компания "{self.name or self.user.email}"'
 
-
     def save(self, *args, **kwargs):
         if not self.name:
             self.name = f"Компания {self.name or self.user.email}"
@@ -168,7 +166,6 @@ class Job(ResumeOrVacancyModel):
         related_name="vacancies",
         verbose_name="Компания",
     )
-
 
     description = models.TextField("Описание вакансии")
     requirements = models.TextField("Требования", blank=True)
@@ -269,12 +266,40 @@ class JobApplication(BaseID, BaseDate):
         return f"Отклик {self.applicant.email} на {self.job.position} в {self.job.company.name}"
 
 
-# Сигналы для автоматического создания профиля компании
-# from django.db.models.signals import post_save
-# from django.dispatch import receiver
+class CompanyRevie(BaseReview):
+    """
+    Модель отзыва о компании
+    """
 
+    company = models.ForeignKey(
+        Company,
+        on_delete=models.CASCADE,
+        related_name="reviews",
+        verbose_name="Компания",
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="company_reviews",
+        verbose_name="Пользователь",
+    )
+    likes = models.ManyToManyField(
+        User, verbose_name="Лайки", blank=True, related_name="+"
+    )
 
-# @receiver(post_save, sender=settings.AUTH_USER_MODEL)
-# def create_company_profile(sender, instance, created, **kwargs):
-#     if created and instance.type == "company":
-#         Company.objects.create(user=instance)
+    def clean(self):
+        if self.user.type != "specialist":
+            raise ValidationError("Пользователь должен быть специалистом!")
+        return super().clean()
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Отзыв {self.name} о компании {self.company.name}"
+
+    class Meta:
+        verbose_name = "Отзыв о компании"
+        verbose_name_plural = "Отзывы о компаниях"
+        ordering = ["-created_at"]
